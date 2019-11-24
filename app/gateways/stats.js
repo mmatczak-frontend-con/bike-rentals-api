@@ -17,4 +17,75 @@ https://www.wroclaw.pl/open-data/api/action/datastore_search_sql?sql=SELECT Date
 const bikeIdPropertyName = "Numer roweru";
 const rentStartDatePropertyName = "Data wynajmu";
 
-module.exports = {};
+module.exports = {
+  getRentalStatsNaive() {
+    return rp
+      .get(naiveApiEndpoint)
+      .then(getResultsFromResponse)
+      .then(statsArray =>
+        statsArray.map(singleStat => {
+          return {
+            bikeId: singleStat[bikeIdPropertyName],
+            rentStartDate: singleStat[rentStartDatePropertyName].substr(0, 10)
+          };
+        })
+      );
+  },
+
+  getRentalStatsImproved() {
+    return this.getRentalStatsNaive()
+      .then(stats => groupByCount(stats, "bikeId", "rentStartDate"))
+      .then(stats => {
+        return Object.keys(stats).map(bikeId => {
+          const dailyStats = Object.keys(stats[bikeId]).map(date => {
+            return { date: date, count: stats[bikeId][date] };
+          });
+          return { bikeId, dailyStats };
+        });
+      });
+  },
+
+  getRentalStatsOptimized() {
+    return rp
+      .get(getDistinctBikeEndpoint)
+      .then(getResultsFromResponse)
+      .then(bikes => {
+        const bikeStatsRequests = [];
+        bikes.forEach(bike => {
+          bikeStatsRequests.push(getStatsForBike(bike.bikeid));
+        });
+        return Promise.all(bikeStatsRequests);
+      });
+  }
+};
+
+const getResultsFromResponse = response => JSON.parse(response).result.records;
+
+const groupByCount = (objectArray, groupByProperty1, groupByProperty2) => {
+  return objectArray.reduce(function(acc, obj) {
+    var key1 = obj[groupByProperty1];
+    var key2 = obj[groupByProperty2];
+    if (!acc[key1]) {
+      acc[key1] = {};
+    }
+    if (!acc[key1][key2]) {
+      acc[key1][key2] = 0;
+    }
+    acc[key1][key2]++;
+    return acc;
+  }, {});
+};
+
+const getStatsForBike = bikeId => {
+  const url = getEndpointWithStatsForBike(bikeId);
+
+  return rp
+    .get(url)
+    .then(getResultsFromResponse)
+    .then(dailyStats => {
+      return {
+        bikeId,
+        dailyStats
+      };
+    });
+};

@@ -13,6 +13,26 @@ const respondWithMethodNotAllowed = (req, res) => {
 };
 
 module.exports = app => {
+  app
+    .route(`${apiPrefix}/stats/v1`)
+    .get(invoiceController.getRentalStatsNaive)
+    .all(respondWithMethodNotAllowed);
+
+  app
+    .route(`${apiPrefix}/stats/v2`)
+    .get(invoiceController.getRentalStatsImproved)
+    .all(respondWithMethodNotAllowed);
+
+  app
+    .route(`${apiPrefix}/stats/v3`)
+    .get(invoiceController.getRentalStatsOptimized)
+    .all(respondWithMethodNotAllowed);
+
+  app
+    .route(`${apiPrefix}/stats/detailed`)
+    .get(invoiceController.getDetailedStatistics)
+    .all(respondWithMethodNotAllowed);
+
   // catch 404 and forward to error handler
   app.use((req, res, next) => {
     const err = new Error("Not Found");
