@@ -46,5 +46,13 @@ module.exports = {
         }
       })
       .catch(next);
+  },
+  getDetailedStatistics(req, res, next) {
+    return statsService
+      .getDetailedStatistics()
+      .then(stats => {
+        res.status(200).send(stats);
+      })
+      .catch(next);
   }
 };

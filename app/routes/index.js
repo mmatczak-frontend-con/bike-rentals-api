@@ -28,6 +28,11 @@ module.exports = app => {
     .get(invoiceController.getRentalStatsOptimized)
     .all(respondWithMethodNotAllowed);
 
+  app
+    .route(`${apiPrefix}/stats/detailed`)
+    .get(invoiceController.getDetailedStatistics)
+    .all(respondWithMethodNotAllowed);
+
   // catch 404 and forward to error handler
   app.use((req, res, next) => {
     const err = new Error("Not Found");

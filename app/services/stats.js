@@ -12,5 +12,13 @@ module.exports = {
 
   getRentalStatsOptimized() {
     return statsGateway.getRentalStatsOptimized();
+  },
+
+  getDetailedStatistics() {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve({ stats: "Very detailed statistics" });
+      }, 5000);
+    });
   }
 };
