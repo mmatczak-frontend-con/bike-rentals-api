@@ -17,4 +17,20 @@ https://www.wroclaw.pl/open-data/api/action/datastore_search_sql?sql=SELECT Date
 const bikeIdPropertyName = "Numer roweru";
 const rentStartDatePropertyName = "Data wynajmu";
 
-module.exports = {};
+module.exports = {
+  getRentalStatsNaive() {
+    return rp
+      .get(naiveApiEndpoint)
+      .then(getResultsFromResponse)
+      .then(statsArray =>
+        statsArray.map(singleStat => {
+          return {
+            bikeId: singleStat[bikeIdPropertyName],
+            rentStartDate: singleStat[rentStartDatePropertyName]
+          };
+        })
+      );
+  }
+};
+
+const getResultsFromResponse = response => JSON.parse(response).result.records;

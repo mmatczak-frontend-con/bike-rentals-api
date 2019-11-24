@@ -1,3 +1,8 @@
 "use strict";
+const { statsGateway } = require("../gateways/index");
 
-module.exports = {};
+module.exports = {
+  getRentalStatsNaive() {
+    return statsGateway.getRentalStatsNaive();
+  }
+};
