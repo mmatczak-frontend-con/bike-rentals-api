@@ -43,6 +43,19 @@ module.exports = {
           return { bikeId, dailyStats };
         });
       });
+  },
+
+  getRentalStatsOptimized() {
+    return rp
+      .get(getDistinctBikeEndpoint)
+      .then(getResultsFromResponse)
+      .then(bikes => {
+        const bikeStatsRequests = [];
+        bikes.forEach(bike => {
+          bikeStatsRequests.push(getStatsForBike(bike.bikeid));
+        });
+        return Promise.all(bikeStatsRequests);
+      });
   }
 };
 
@@ -61,4 +74,18 @@ const groupByCount = (objectArray, groupByProperty1, groupByProperty2) => {
     acc[key1][key2]++;
     return acc;
   }, {});
+};
+
+const getStatsForBike = bikeId => {
+  const url = getEndpointWithStatsForBike(bikeId);
+
+  return rp
+    .get(url)
+    .then(getResultsFromResponse)
+    .then(dailyStats => {
+      return {
+        bikeId,
+        dailyStats
+      };
+    });
 };

@@ -8,5 +8,9 @@ module.exports = {
 
   getRentalStatsImproved() {
     return statsGateway.getRentalStatsImproved();
+  },
+
+  getRentalStatsOptimized() {
+    return statsGateway.getRentalStatsOptimized();
   }
 };

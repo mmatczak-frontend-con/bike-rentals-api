@@ -31,5 +31,20 @@ module.exports = {
         }
       })
       .catch(next);
+  },
+
+  getRentalStatsOptimized(req, res, next) {
+    return statsService
+      .getRentalStatsOptimized()
+      .then(stats => {
+        if (!stats) {
+          const msg = `Cannot find stats!`;
+          logger.warn(msg);
+          res.status(400).send({ message: msg });
+        } else {
+          res.status(200).send(stats);
+        }
+      })
+      .catch(next);
   }
 };
