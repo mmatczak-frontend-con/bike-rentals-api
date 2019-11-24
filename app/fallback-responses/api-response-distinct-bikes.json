@@ -1,0 +1,21 @@
+{
+  "help": "https://www.wroclaw.pl/open-data/api/3/action/help_show?name=datastore_search_sql",
+  "success": true,
+  "result": {
+    "records": [
+      {
+        "bikeid": "57332"
+      },
+      {
+        "bikeid": "57638"
+      }
+    ],
+    "fields": [
+      {
+        "type": "numeric",
+        "id": "bikeid"
+      }
+    ],
+    "sql": "SELECT distinct \"Numer roweru\" as bikeId from \"276306b4-9ab7-4036-a7e3-ee7af3b485d5\" WHERE \"Numer roweru\" in (57638,57332)"
+  }
+}
